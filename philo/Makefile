@@ -6,7 +6,7 @@
 #    By: lribette <lribette@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/09 18:34:10 by lribette          #+#    #+#              #
-#    Updated: 2024/01/09 18:52:22 by lribette         ###   ########.fr        #
+#    Updated: 2024/01/09 22:38:29 by lribette         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,12 +17,12 @@ SOURCES = test.c
 OBJECTS = $(SOURCES:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -pthread
 
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(NAME)
+	$(CC) $(SOURCES) $(CFLAGS) -o $(NAME)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
