@@ -6,34 +6,44 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 18:34:45 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/09 23:20:47 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/10 15:00:28 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/time.h>
 #include <pthread.h>
 
 # define RESET	"\e[0m"
 # define BLUE	"\x1b[38;2;74;194;255m"
 
+typedef struct s_counter
+{
+	pthread_mutex_t	count_mutex;
+	int				count;
+}	t_counter;
+
 void	*test(void *data)
 {
-	(void)data;
 	pthread_t	id;
-	int	*count;
+	t_counter	*count;
 	int	i;
 
 	id = pthread_self();
-	count = (int *)data;
+	count = (t_counter *)data;
 	i = 0;
 	while (i < 10000)
 	{
-		(*count)++;
+		pthread_mutex_lock(&count->count_mutex);
+		count->count++;
 		i++;
+		pthread_mutex_unlock(&count->count_mutex);
 	}
-	printf("count = %d, i = %d", *count, i);
+	pthread_mutex_lock(&count->count_mutex);
+	printf("[%ld]count = %d, i = %d\n", id, count->count, i);
+	pthread_mutex_unlock(&count->count_mutex);
 	return (NULL);
 }
 
@@ -41,11 +51,15 @@ int main(void)
 {
 	pthread_t	obi_wan;
 	pthread_t	grievous;
+	t_counter	count;
 
-	pthread_create(&obi_wan, NULL, test, NULL);
-	pthread_create(&grievous, NULL, test, NULL);
+	count.count = 0;
+	pthread_mutex_init(&count.count_mutex, NULL);
+	pthread_create(&obi_wan, NULL, test, &count);
+	pthread_create(&grievous, NULL, test, &count);
 	pthread_join(obi_wan, NULL);
 	pthread_join(grievous, NULL);
+	pthread_mutex_destroy(&count.count_mutex);
 	/*struct timeval	start;
 	struct timeval	end;
 	long long	diff;
