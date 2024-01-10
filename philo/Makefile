@@ -6,18 +6,18 @@
 #    By: lribette <lribette@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/09 18:34:10 by lribette          #+#    #+#              #
-#    Updated: 2024/01/09 22:38:29 by lribette         ###   ########.fr        #
+#    Updated: 2024/01/10 17:29:21 by lribette         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SOURCES = test.c
+SOURCES = utils.c main.c
 
 OBJECTS = $(SOURCES:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -pthread
+CFLAGS = -Wall -Werror -Wextra -pthread -g
 
 all: $(NAME)
 
