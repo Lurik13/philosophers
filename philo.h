@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 16:38:12 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/22 16:26:55 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/22 17:12:22 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,11 @@ typedef struct s_struct
 	struct timeval	start;
 	t_philos		*philos;
 	int				*forks;
-	pthread_mutex_t mutex;
+	pthread_mutex_t	mutex;
 }	t_struct;
 
 int		ft_atoi(char *str);
-long	get_time(t_struct *main);
+long	get_time(t_struct *m);
+void	launch_routine(t_struct *m);
 
 #endif

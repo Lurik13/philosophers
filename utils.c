@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 16:49:54 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/22 16:40:35 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/22 17:12:38 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	ft_atoi(char *str)
 {
 	int			i;
 	long long	number;
-	
+
 	i = 0;
 	number = 0;
 	while (str[i])
@@ -28,6 +28,5 @@ int	ft_atoi(char *str)
 			return (0);
 		i++;
 	}
-	
 	return ((int)number);
 }
