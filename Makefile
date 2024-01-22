@@ -6,13 +6,13 @@
 #    By: lribette <lribette@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/09 18:34:10 by lribette          #+#    #+#              #
-#    Updated: 2024/01/10 17:29:21 by lribette         ###   ########.fr        #
+#    Updated: 2024/01/22 13:36:30 by lribette         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SOURCES = utils.c main.c
+SOURCES = main.c time.c utils.c
 
 OBJECTS = $(SOURCES:.c=.o)
 

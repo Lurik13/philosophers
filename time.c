@@ -1,33 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/10 16:49:54 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/22 16:40:35 by lribette         ###   ########.fr       */
+/*   Created: 2024/01/22 13:36:08 by lribette          #+#    #+#             */
+/*   Updated: 2024/01/22 15:53:45 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_atoi(char *str)
+long	get_time(t_struct *main)
 {
-	int			i;
-	long long	number;
-	
-	i = 0;
-	number = 0;
-	while (str[i])
-	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		number = number * 10 + str[i] - 48;
-		if (number > 2147483647 || number < -2147483648)
-			return (0);
-		i++;
-	}
-	
-	return ((int)number);
+	long	first;
+	long	current;
+	struct timeval	current_time;
+
+	first = main->start.tv_sec * 1000 + main->start.tv_usec / 1000;
+	gettimeofday(&current_time, NULL);
+	current = current_time.tv_sec * 1000 + current_time.tv_usec / 1000;
+	return (current - first);
 }

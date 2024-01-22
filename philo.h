@@ -6,30 +6,41 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 16:38:12 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/10 17:34:48 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/22 16:26:55 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
+# include "colors.h"
 # include <string.h>
 # include <stdio.h>
+# include <unistd.h>
 # include <stdlib.h>
 # include <sys/time.h>
 # include <pthread.h>
 
-typedef struct	s_philosophers
+typedef struct s_philos
 {
-	int	nb_of_philos;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	nb_of_time_eating;
-	int	*philos;
-	int	*forks;
-}	t_philosophers;
+	int			num;
+	pthread_t	thread;
+}	t_philos;
 
-int	ft_atoi(char *str);
+typedef struct s_struct
+{
+	int				nb_of_philos;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
+	int				nb_of_time_eating;
+	struct timeval	start;
+	t_philos		*philos;
+	int				*forks;
+	pthread_mutex_t mutex;
+}	t_struct;
+
+int		ft_atoi(char *str);
+long	get_time(t_struct *main);
 
 #endif

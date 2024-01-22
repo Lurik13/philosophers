@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 18:34:45 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/10 15:00:28 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/22 13:38:27 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int main(void)
 	pthread_join(obi_wan, NULL);
 	pthread_join(grievous, NULL);
 	pthread_mutex_destroy(&count.count_mutex);
-	/*struct timeval	start;
+	struct timeval	start;
 	struct timeval	end;
 	long long	diff;
 	gettimeofday(&start, NULL);
