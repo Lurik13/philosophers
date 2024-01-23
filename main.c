@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 16:37:55 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/22 17:25:13 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/23 14:35:45 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@ int	ft_start(t_struct *m)
 	int	i;
 
 	i = 0;
-	m->philos = malloc(m->nb_of_philos * sizeof(t_philos));
-	m->forks = malloc(m->nb_of_philos * sizeof(int));
-	if (!m->philos || !m->forks)
+	m->p = malloc(m->nb_of_philos * sizeof(t_philos));
+	m->forks = malloc(m->nb_of_philos * sizeof(pthread_mutex_t));
+	if (!m->p || !m->forks)
 		return (0);
 	while (i < m->nb_of_philos)
 	{
-		m->philos[i].num = i + 1;
-		m->forks[i] = i + 1;
-		/*printf("[%ld] ", get_time(m));
+		m->p[i].num = i + 1;
+		m->p[i].structure = m;
+		printf("[%ld] ", get_time(m));
 		if (i % 6 == 0)
 			printf("%s", RED);
 		if (i % 6 == 1)
@@ -38,15 +38,15 @@ int	ft_start(t_struct *m)
 			printf("%s", BLUE);
 		if (i % 6 == 5)
 			printf("%s", PURPLE);
-		printf("%d%s", m->philos[i].num, RESET);
+		printf("%d%s", m->p[i].num, RESET);
 		if (i % 3 == 0)
 			printf("%s", EATING);
 		if (i % 3 == 1)
 			printf("%s", SLEEPING);
 		if (i % 3 == 2)
 			printf("%s", THINKING);
-		usleep(100);*/
-		printf("i = %d, [%d][%d]\n", i, m->philos[i].num, m->forks[i]);
+		usleep(100);
+		//printf("i = %d, [%d][%d]\n", i, m->p[i].num, m->forks[i]);
 		i++;
 	}
 	return (1);
@@ -71,7 +71,7 @@ int	ft_error(t_struct *m, int argc)
 
 void	ft_free(t_struct *m)
 {
-	free(m->philos);
+	free(m->p);
 	free(m->forks);
 }
 
