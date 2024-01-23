@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 12:55:24 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/23 14:34:47 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/23 18:48:47 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@
 
 /* **************** BOLD ONES **************** */
 # define RED_ERROR "\x1b[38;2;180;0;0;1m"
-# define EATING "\x1b[38;2;226;185;5;1m is eating\e[0m\n"
-# define SLEEPING "\x1b[38;2;134;134;134;1m is sleeping\e[0m\n"
-# define THINKING "\x1b[38;2;144;71;255;1m is thinking\e[0m\n"
+# define FORK "\x1b[38;2;6;151;221;1mhas taken a fork\e[0m\n"
+# define EATING "\x1b[38;2;226;185;5;1mis eating\e[0m\n"
+# define SLEEPING "\x1b[38;2;134;134;134;1mis sleeping\e[0m\n"
+# define THINKING "\x1b[38;2;144;71;255;1mis thinking\e[0m\n"
 
 /* *************** NORMAL ONES *************** */
 # define RED "\x1b[38;2;255;0;0m"

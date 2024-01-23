@@ -6,7 +6,7 @@
 #    By: lribette <lribette@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/09 18:34:10 by lribette          #+#    #+#              #
-#    Updated: 2024/01/22 17:03:04 by lribette         ###   ########.fr        #
+#    Updated: 2024/01/23 23:02:51 by lribette         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ SOURCES = main.c routine.c time.c utils.c
 OBJECTS = $(SOURCES:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -pthread -g
+CFLAGS = -Wall -Werror -Wextra -pthread -g #-fsanitize=thread
 
 all: $(NAME)
 

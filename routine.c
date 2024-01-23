@@ -6,39 +6,93 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 16:57:14 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/23 14:33:11 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/23 23:01:50 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+void	eating(t_philos *p)
+{
+	long	current;
+
+	pthread_mutex_lock(&p->m->forks[p->num - 1]);
+	pthread_mutex_lock(&p->m->forks[p->num % p->m->nb_of_philos]);
+	current = get_time(p->m);
+	printf("%ld %d %s", current, p->num, FORK);
+	printf("%ld %d %s", current, p->num, EATING);
+	usleep(p->m->time_to_eat * 1000);
+	pthread_mutex_unlock(&p->m->forks[p->num - 1]);
+	pthread_mutex_unlock(&p->m->forks[p->num % p->m->nb_of_philos]);
+	//printf("%d", p->m->time_to_eat);
+	p->last_meal = get_time(p->m);
+	/*printf("Gauche : %d\n", p->num);
+	if ((p->num + 1) % (p->m->nb_of_philos + 1) == 0)
+		printf("Droite : 1\n");
+	else
+		printf("Droite : %d\n", (p->num + 1) % (p->m->nb_of_philos + 1));*/
+}
+
+void	is_sleeping(t_philos *p)
+{
+	long	current;
+
+	pthread_mutex_lock(&p->m->sleeping);
+	current = get_time(p->m);
+	printf("%ld %d %s", current, p->num, SLEEPING);
+	pthread_mutex_unlock(&p->m->sleeping);
+	usleep(p->m->time_to_sleep * 1000);
+	current = get_time(p->m);
+	if (current - p->last_meal > p->m->time_to_die)
+		printf("%sALERTE%s", RED_ERROR, RESET);
+}
+
+void	is_thinking(t_philos *p)
+{
+	long	current;
+
+	pthread_mutex_lock(&p->m->thinking);
+	current = get_time(p->m);
+	printf("%ld %d %s", current, p->num, THINKING);
+	pthread_mutex_unlock(&p->m->thinking);
+	usleep(0);
+}
+
 void	*routine(void *data)
 {
-	t_philos	*philo;
+	t_philos	*p;
 
-	philo = (t_philos *) data;
-	/*if (!philo->structure)
-		printf("%sJe n'ai pas acces a structure%s\n", RED, RESET);*/
-	printf("ca marche ? %d\n", philo->structure->nb_of_philos);
-	printf("%sJe suis le philo %d%s\n", GREEN, philo->num, RESET);
-	/*pthread_mutex_lock(m->forks[philo->num - 1]);
-	printf("Ma fourchette : %d\n", philo->num);
-	pthread_mutex_unlock(m->forks[philo->num - 1]);*/
+	p = (t_philos *) data;
+	pthread_mutex_init(&p->m->sleeping, NULL);
+	pthread_mutex_init(&p->m->thinking, NULL);
+	if (p->num % 2 == 0)
+	{
+		//printf("%d\n", p->num);
+		usleep(p->m->time_to_eat);
+	}
+	while (1)
+	{
+		eating(p);
+		is_sleeping(p);
+		is_thinking(p);
+	}
+	//printf("[%ld]", get_time(p->m));
+	pthread_mutex_destroy(&p->m->sleeping);
+	pthread_mutex_destroy(&p->m->thinking);
 	return (NULL);
 }
 
 void	launch_routine(t_struct *m)
 {
 	int	i;
-	//pthread_mutex_t	*forks;
 
 	i = 0;
-	//forks = malloc(m->nb_of_philos * sizeof(pthread_mutex_t));
-	/*if (!forks)
-		printf(RED_ERROR);*/
-	/*if (!m->p[0].structure)
-		printf("%sJe n'ai pas acces a structure%s\n", RED, RESET);*/
-	pthread_mutex_init(m->forks, NULL);
+	while (i < m->nb_of_philos)
+	{
+		pthread_mutex_init(&m->forks[i], NULL);
+		i++;
+	}
+	i = 0;
 	while (i < m->nb_of_philos)
 	{
 		pthread_create(&m->p[i].thread, NULL, routine, &(m->p[i]));
@@ -50,5 +104,11 @@ void	launch_routine(t_struct *m)
 		pthread_join(m->p[i].thread, NULL);
 		i++;
 	}
-	pthread_mutex_destroy(m->forks);
+	i = 0;
+	while (i < m->nb_of_philos)
+	{
+		pthread_mutex_destroy(m->forks);
+		i++;
+	}
+	printf("C'est la fin\n");
 }
