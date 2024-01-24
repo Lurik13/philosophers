@@ -6,56 +6,92 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 16:57:14 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/24 09:11:50 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/24 17:43:11 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	eating(t_philos *p)
+int	eating(t_philos *p)
 {
 	long	current;
 
 	pthread_mutex_lock(&p->m->forks[p->num - 1]);
 	pthread_mutex_lock(&p->m->forks[p->num % p->m->nb_of_philos]);
+	pthread_mutex_lock(&p->m->dying);
+	if (p->m->died)
+	{
+		pthread_mutex_unlock(&p->m->dying);
+		pthread_mutex_unlock(&p->m->forks[p->num - 1]);
+		pthread_mutex_unlock(&p->m->forks[p->num % p->m->nb_of_philos]);
+		return (1);
+	}
+	pthread_mutex_unlock(&p->m->dying);
 	current = get_time(p->m);
 	printf("%ld %d %s", current, p->num, FORK);
 	printf("%ld %d %s", current, p->num, EATING);
+	pthread_mutex_lock(&p->m->ate);
+	p->last_meal = get_time(p->m);
+	pthread_mutex_unlock(&p->m->ate);
 	usleep(p->m->time_to_eat * 1000);
 	pthread_mutex_unlock(&p->m->forks[p->num - 1]);
 	pthread_mutex_unlock(&p->m->forks[p->num % p->m->nb_of_philos]);
-	//printf("%d", p->m->time_to_eat);
-	p->last_meal = get_time(p->m);
-	/*printf("Gauche : %d\n", p->num);
-	if ((p->num + 1) % (p->m->nb_of_philos + 1) == 0)
-		printf("Droite : 1\n");
+	return (0);
+}
+
+int	is_sleeping(t_philos *p)
+{
+	long	current;
+
+	pthread_mutex_lock(&p->m->dying);
+	if (!p->m->died)
+	{
+		pthread_mutex_unlock(&p->m->dying);
+		current = get_time(p->m);
+		pthread_mutex_lock(&p->m->sleeping);
+		pthread_mutex_lock(&p->m->dying);
+		if (p->m->died)
+		{
+			pthread_mutex_unlock(&p->m->dying);
+			pthread_mutex_unlock(&p->m->sleeping);
+			return (1);
+		}
+		pthread_mutex_unlock(&p->m->dying);
+		printf("%ld %d %s", current, p->num, SLEEPING);
+		pthread_mutex_unlock(&p->m->sleeping);
+		usleep(p->m->time_to_sleep * 1000);
+		current = get_time(p->m);
+	}
 	else
-		printf("Droite : %d\n", (p->num + 1) % (p->m->nb_of_philos + 1));*/
+		pthread_mutex_unlock(&p->m->dying);
+	return (0);
 }
 
-void	is_sleeping(t_philos *p)
+int	is_thinking(t_philos *p)
 {
 	long	current;
 
-	pthread_mutex_lock(&p->m->sleeping);
-	current = get_time(p->m);
-	printf("%ld %d %s", current, p->num, SLEEPING);
-	pthread_mutex_unlock(&p->m->sleeping);
-	usleep(p->m->time_to_sleep * 1000);
-	current = get_time(p->m);
-	if (current - p->last_meal > p->m->time_to_die)
-		printf("%sALERTE%s", RED_ERROR, RESET);
-}
-
-void	is_thinking(t_philos *p)
-{
-	long	current;
-
-	pthread_mutex_lock(&p->m->thinking);
-	current = get_time(p->m);
-	printf("%ld %d %s", current, p->num, THINKING);
-	pthread_mutex_unlock(&p->m->thinking);
-	usleep(0);
+	pthread_mutex_lock(&p->m->dying);
+	if (!p->m->died)
+	{
+		pthread_mutex_unlock(&p->m->dying);
+		current = get_time(p->m);
+		pthread_mutex_lock(&p->m->thinking);
+		pthread_mutex_lock(&p->m->dying);
+		if (p->m->died)
+		{
+			pthread_mutex_unlock(&p->m->dying);
+			pthread_mutex_unlock(&p->m->thinking);
+			return (1);
+		}
+		pthread_mutex_unlock(&p->m->dying);
+		printf("%ld %d %s", current, p->num, THINKING);
+		pthread_mutex_unlock(&p->m->thinking);
+		usleep(0);
+	}
+	else
+		pthread_mutex_unlock(&p->m->dying);
+	return (0);
 }
 
 void	*routine(void *data)
@@ -64,51 +100,19 @@ void	*routine(void *data)
 
 	p = (t_philos *) data;
 	if (p->num % 2 == 0)
-	{
-		//printf("%d\n", p->num);
-		usleep(p->m->time_to_eat);
-	}
+		usleep(1);
 	while (1)
 	{
-		eating(p);
-		is_sleeping(p);
-		is_thinking(p);
+		if (eating(p))
+			break ;
+		if (is_sleeping(p))
+			break ;
+		if (is_thinking(p))
+			break ;
 	}
-	//printf("[%ld]", get_time(p->m));
 	return (NULL);
 }
 
-void	launch_routine(t_struct *m)
-{
-	int	i;
-
-	i = 0;
-	while (i < m->nb_of_philos)
-	{
-		pthread_mutex_init(&m->forks[i], NULL);
-		i++;
-	}
-	pthread_mutex_init(&m->sleeping, NULL);
-	pthread_mutex_init(&m->thinking, NULL);
-	i = 0;
-	while (i < m->nb_of_philos)
-	{
-		pthread_create(&m->p[i].thread, NULL, routine, &(m->p[i]));
-		i++;
-	}
-	i = 0;
-	while (i < m->nb_of_philos)
-	{
-		pthread_join(m->p[i].thread, NULL);
-		i++;
-	}
-	i = 0;
-	while (i < m->nb_of_philos)
-	{
-		pthread_mutex_destroy(m->forks);
-		i++;
-	}
-	pthread_mutex_destroy(&m->sleeping);
-	pthread_mutex_destroy(&m->thinking);
-	printf("C'est la fin\n");
-}
+// si nb_of_philos % 2 == 1 -> avant-dernier = decale
+// prendre en compte pour un philo
+// prendre en compte le nombre de fois qu'ils mangent

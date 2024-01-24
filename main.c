@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 16:37:55 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/23 21:58:48 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/24 13:06:27 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@ int	ft_start(t_struct *m)
 
 	i = 0;
 	m->p = malloc(m->nb_of_philos * sizeof(t_philos));
-	//m->forks = malloc(m->nb_of_philos * sizeof(pthread_mutex_t));
-	if (!m->p/* || !m->forks*/)
+	m->forks = malloc(m->nb_of_philos * sizeof(pthread_mutex_t));
+	if (!m->p || !m->forks)
 		return (0);
 	while (i < m->nb_of_philos)
 	{
 		m->p[i].num = i + 1;
+		m->p[i].last_meal = 0;
 		m->p[i].m = m;
 		/*printf("[%ld] ", get_time(m));
 		if (i % 6 == 0)
@@ -72,7 +73,7 @@ int	ft_error(t_struct *m, int argc)
 void	ft_free(t_struct *m)
 {
 	free(m->p);
-	//free(m->forks);
+	free(m->forks);
 }
 
 void	init_params(t_struct *m, char **argv)
@@ -101,7 +102,7 @@ int	main(int argc, char **argv)
 		if (!ft_error(&m, argc))
 		{
 			ft_start(&m);
-			launch_routine(&m);
+			manage_routine(&m);
 			ft_free(&m);
 		}
 	}

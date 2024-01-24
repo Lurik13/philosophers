@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 16:38:12 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/23 20:49:25 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/24 14:38:46 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 
 typedef struct s_philos
 {
-	int			num;
-	long		last_meal;
-	pthread_t	thread;
+	int				num;
+	long			last_meal;
+	pthread_t		thread;
 	struct s_struct	*m;
 }	t_philos;
 
@@ -36,15 +36,22 @@ typedef struct s_struct
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				nb_of_time_eating;
+	int				died;
 	struct timeval	start;
 	t_philos		*p;
-	pthread_mutex_t	forks[200];
+	pthread_t		reaper;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	ate;
 	pthread_mutex_t	sleeping;
 	pthread_mutex_t	thinking;
+	pthread_mutex_t	dying;
 }	t_struct;
 
 int		ft_atoi(char *str);
 long	get_time(t_struct *m);
-void	launch_routine(t_struct *m);
+void	*routine(void *data);
+void	destroy_routine(t_struct *m);
+void	manage_routine(t_struct *m);
+void	*reaper_init(void *data);
 
 #endif
