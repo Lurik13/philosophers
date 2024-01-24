@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 16:57:14 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/23 23:01:50 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/24 09:11:50 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ void	*routine(void *data)
 	t_philos	*p;
 
 	p = (t_philos *) data;
-	pthread_mutex_init(&p->m->sleeping, NULL);
-	pthread_mutex_init(&p->m->thinking, NULL);
 	if (p->num % 2 == 0)
 	{
 		//printf("%d\n", p->num);
@@ -77,8 +75,6 @@ void	*routine(void *data)
 		is_thinking(p);
 	}
 	//printf("[%ld]", get_time(p->m));
-	pthread_mutex_destroy(&p->m->sleeping);
-	pthread_mutex_destroy(&p->m->thinking);
 	return (NULL);
 }
 
@@ -92,6 +88,8 @@ void	launch_routine(t_struct *m)
 		pthread_mutex_init(&m->forks[i], NULL);
 		i++;
 	}
+	pthread_mutex_init(&m->sleeping, NULL);
+	pthread_mutex_init(&m->thinking, NULL);
 	i = 0;
 	while (i < m->nb_of_philos)
 	{
@@ -110,5 +108,7 @@ void	launch_routine(t_struct *m)
 		pthread_mutex_destroy(m->forks);
 		i++;
 	}
+	pthread_mutex_destroy(&m->sleeping);
+	pthread_mutex_destroy(&m->thinking);
 	printf("C'est la fin\n");
 }
