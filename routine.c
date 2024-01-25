@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 16:57:14 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/25 11:14:17 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/25 19:31:58 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,30 +97,26 @@ int	is_thinking(t_philos *p)
 void	*routine(void *data)
 {
 	t_philos	*p;
-	int			i;
 
 	p = (t_philos *) data;
-	i = 0;
 	if (p->num % 2 == 0)
-		usleep(1);
+		usleep(100);
 	while (1)
 	{
-		/*if (p->m->nb_of_times_eating && i == p->m->nb_of_times_eating)
-		{
-			//pthread_mutex_lock(&p->m->activity);
-			p->active = 0;
-			//pthread_mutex_unlock(&p->m->activity);
-			break ;
-		}*/
-		i++;
 		if (eating(p))
 			break ;
-		if (is_sleeping(p))
+		pthread_mutex_lock(&p->m->nb_of_times_eaten);
+		p->nb_of_times_eaten_p++;
+		pthread_mutex_unlock(&p->m->nb_of_times_eaten);
+		pthread_mutex_lock(&p->m->dying);
+		if (p->m->died)
+		{
+			pthread_mutex_unlock(&p->m->dying);
 			break ;
-		if (is_thinking(p))
+		}
+		pthread_mutex_unlock(&p->m->dying);
+		if (is_sleeping(p) || is_thinking(p))
 			break ;
 	}
 	return (NULL);
 }
-
-// prendre en compte pour un philo
