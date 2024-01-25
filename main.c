@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 16:37:55 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/24 13:06:27 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/25 11:16:52 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,29 +25,8 @@ int	ft_start(t_struct *m)
 	{
 		m->p[i].num = i + 1;
 		m->p[i].last_meal = 0;
+		m->p[i].active = 1;
 		m->p[i].m = m;
-		/*printf("[%ld] ", get_time(m));
-		if (i % 6 == 0)
-			printf("%s", RED);
-		if (i % 6 == 1)
-			printf("%s", ORANGE);
-		if (i % 6 == 2)
-			printf("%s", YELLOW);
-		if (i % 6 == 3)
-			printf("%s", GREEN);
-		if (i % 6 == 4)
-			printf("%s", BLUE);
-		if (i % 6 == 5)
-			printf("%s", PURPLE);
-		printf("%d%s", m->p[i].num, RESET);
-		if (i % 3 == 0)
-			printf("%s", EATING);
-		if (i % 3 == 1)
-			printf("%s", SLEEPING);
-		if (i % 3 == 2)
-			printf("%s", THINKING);
-		usleep(100);*/
-		//printf("i = %d, [%d][%d]\n", i, m->p[i].num, m->forks[i]);
 		i++;
 	}
 	return (1);
@@ -63,8 +42,10 @@ int	ft_error(t_struct *m, int argc)
 		printf("%sWrong time to eat%s\n", RED_ERROR, RESET);
 	else if (!m->time_to_sleep)
 		printf("%sWrong time to sleep%s\n", RED_ERROR, RESET);
-	else if (argc == 6 && !m->nb_of_time_eating)
+	else if (argc == 6 && m->nb_of_times_eating < 0)
 		printf("%sWrong number of times eating%s\n", RED_ERROR, RESET);
+	/*else if (argc == 5)
+		m->nb_of_times_eating = 0;*/
 	else
 		return (0);
 	return (1);
@@ -83,9 +64,8 @@ void	init_params(t_struct *m, char **argv)
 	m->time_to_eat = ft_atoi(argv[3]);
 	m->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
-		m->nb_of_time_eating = ft_atoi(argv[5]);
+		m->nb_of_times_eating = ft_atoi(argv[5]);
 	gettimeofday(&m->start, NULL);
-	//printf("time = %ld", m->start.tv_sec * 1000 + m->start.tv_usec / 1000);
 }
 
 int	main(int argc, char **argv)

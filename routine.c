@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 16:57:14 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/24 17:43:11 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/25 11:14:17 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,12 +97,22 @@ int	is_thinking(t_philos *p)
 void	*routine(void *data)
 {
 	t_philos	*p;
+	int			i;
 
 	p = (t_philos *) data;
+	i = 0;
 	if (p->num % 2 == 0)
 		usleep(1);
 	while (1)
 	{
+		/*if (p->m->nb_of_times_eating && i == p->m->nb_of_times_eating)
+		{
+			//pthread_mutex_lock(&p->m->activity);
+			p->active = 0;
+			//pthread_mutex_unlock(&p->m->activity);
+			break ;
+		}*/
+		i++;
 		if (eating(p))
 			break ;
 		if (is_sleeping(p))
@@ -113,6 +123,4 @@ void	*routine(void *data)
 	return (NULL);
 }
 
-// si nb_of_philos % 2 == 1 -> avant-dernier = decale
 // prendre en compte pour un philo
-// prendre en compte le nombre de fois qu'ils mangent

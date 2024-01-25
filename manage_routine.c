@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/24 10:41:48 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/24 14:58:19 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/25 11:16:41 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	init_routine(t_struct *m)
 	pthread_mutex_init(&m->sleeping, NULL);
 	pthread_mutex_init(&m->thinking, NULL);
 	pthread_mutex_init(&m->dying, NULL);
+	pthread_mutex_init(&m->activity, NULL);
 	i = 0;
 	while (i < m->nb_of_philos)
 	{
@@ -57,6 +58,7 @@ void	destroy_routine(t_struct *m)
 	pthread_mutex_destroy(&m->sleeping);
 	pthread_mutex_destroy(&m->thinking);
 	pthread_mutex_destroy(&m->dying);
+	pthread_mutex_destroy(&m->activity);
 }
 
 void	manage_routine(t_struct *m)
@@ -66,6 +68,5 @@ void	manage_routine(t_struct *m)
 	printf("C'est la fin\n");
 }
 
-// mutex pour died && data race pour le thread de reaper
 // prendre en compte pour un philo
 // prendre en compte le nombre de fois qu'ils mangent

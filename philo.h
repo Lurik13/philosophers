@@ -6,7 +6,7 @@
 /*   By: lribette <lribette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/10 16:38:12 by lribette          #+#    #+#             */
-/*   Updated: 2024/01/24 14:38:46 by lribette         ###   ########.fr       */
+/*   Updated: 2024/01/25 10:07:19 by lribette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ typedef struct s_philos
 {
 	int				num;
 	long			last_meal;
+	int				active;
 	pthread_t		thread;
 	struct s_struct	*m;
 }	t_philos;
@@ -35,7 +36,7 @@ typedef struct s_struct
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
-	int				nb_of_time_eating;
+	int				nb_of_times_eating;
 	int				died;
 	struct timeval	start;
 	t_philos		*p;
@@ -45,6 +46,7 @@ typedef struct s_struct
 	pthread_mutex_t	sleeping;
 	pthread_mutex_t	thinking;
 	pthread_mutex_t	dying;
+	pthread_mutex_t	activity;
 }	t_struct;
 
 int		ft_atoi(char *str);
